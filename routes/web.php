@@ -16,8 +16,10 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+    // ------------------ PASTE IT HERE ------------------
+    Route::get('/review/create', App\Livewire\CreateReview::class)->name('review.create');
+    // ---------------------------------------------------
     Route::redirect('settings', 'settings/profile');
-
     Route::get('settings/profile', Profile::class)->name('profile.edit');
     Route::get('settings/password', Password::class)->name('user-password.edit');
     Route::get('settings/appearance', Appearance::class)->name('appearance.edit');
