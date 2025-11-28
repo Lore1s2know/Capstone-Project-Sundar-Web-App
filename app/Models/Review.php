@@ -26,4 +26,9 @@ class Review extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    // A review has many Upvotes
+    public function upvotes()
+    {
+        return $this->hasMany(Upvote::class);
+    }
 }
