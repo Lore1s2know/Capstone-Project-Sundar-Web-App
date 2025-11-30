@@ -3,9 +3,7 @@
 
         {{-- 1. TOP ACTION AREA --}}
         <div class="flex justify-between items-center mb-6">
-            <h2 class="font-serif font-semibold text-3xl text-neutral-900 dark:text-gray-100">
-                Sundar Dashboard
-            </h2>
+            
             <a href="{{ route('review.create') }}" wire:navigate 
                class="bg-blue-900 hover:bg-blue-800 text-white font-sans font-bold py-2 px-6 rounded-lg shadow-md transition">
                 + New Review
@@ -19,6 +17,63 @@
             </div>
         @endif
 
+        {{-- 2. STATS OVERVIEW CARDS --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            {{-- Card 1: Total Reviews --}}
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-900 flex items-center justify-between">
+                <div>
+                    <p class="font-sans text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+                        Total Reviews
+                    </p>
+                    <h3 class="font-serif font-bold text-3xl text-neutral-900 dark:text-gray-100">
+                        {{ $statReviews }}
+                    </h3>
+                </div>
+                <div class="p-3 bg-blue-50 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-blue-900">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                </div>
+            </div>
+
+            {{-- Card 2: Total Upvotes --}}
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-900 flex items-center justify-between">
+                <div>
+                    <p class="font-sans text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+                        Upvotes
+                    </p>
+                    <h3 class="font-serif font-bold text-3xl text-neutral-900 dark:text-gray-100">
+                        {{ $statUpvotes }}
+                    </h3>
+                </div>
+                <div class="p-3 bg-blue-50 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-blue-900">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+                    </svg>
+                </div>
+            </div>
+
+            {{-- Card 3: Total Downvotes --}}
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-900 flex items-center justify-between">
+                <div>
+                    <p class="font-sans text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+                        Downvotes
+                    </p>
+                    <h3 class="font-serif font-bold text-3xl text-neutral-900 dark:text-gray-100">
+                        {{ $statDownvotes }}
+                    </h3>
+                </div>
+                <div class="p-3 bg-rose-50 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-rose-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+
+        
         {{-- 2. BIG WIDE CARD CONTAINER --}}
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             
@@ -86,12 +141,32 @@
                                         {{ $review->created_at->format('M d, Y') }}
                                     </span>
                                 </div>
-                                {{-- Vote Count Display (Read Only here) --}}
-                                <div class="flex items-center gap-1 text-slate-400 text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                                        <path d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0 1 14 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 0 1-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 0 1-1.341-.317l-2.734-1.366A3 3 0 0 0 6.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 0 1 2.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388Z" />
-                                    </svg>
-                                    <span class="font-bold">{{ $review->upvotes->where('vote', 1)->count() - $review->upvotes->where('vote', 0)->count() }}</span>
+                                {{-- Vote Count Display (Read Only) --}}
+                                <div class="flex items-center gap-1">
+                                    @php
+                                        $userVote = $review->upvotes->where('user_id', auth()->id())->first();
+                                    @endphp
+
+                                    {{-- UPVOTE BUTTON (Read Only) --}}
+                                    <div class="cursor-not-allowed opacity-60">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
+                                             class="w-4 h-4 {{ $userVote && $userVote->vote == 1 ? 'text-blue-900' : 'text-slate-400' }}">
+                                            <path fill-rule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+
+                                    {{-- SCORE COUNT --}}
+                                    <span class="font-sans font-semibold text-sm text-neutral-600 dark:text-neutral-400 px-1">
+                                        {{ $review->upvotes->where('vote', 1)->count() - $review->upvotes->where('vote', 0)->count() }}
+                                    </span>
+
+                                    {{-- DOWNVOTE BUTTON (Read Only) --}}
+                                    <div class="cursor-not-allowed opacity-60">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
+                                             class="w-4 h-4 {{ $userVote && $userVote->vote === 0 ? 'text-blue-900' : 'text-slate-400' }}">
+                                            <path fill-rule="evenodd" d="M12.53 21.53a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06l6.22 6.22V3a.75.75 0 011.5 0v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
 
