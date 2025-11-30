@@ -7,6 +7,8 @@ use Livewire\WithPagination; // Allows us to use page numbers if we have too man
 use App\Models\Review;
 use App\Models\Category;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Upvote;
 
 class ShowReviews extends Component
 {
@@ -28,6 +30,33 @@ class ShowReviews extends Component
     {
         $this->sortOrder = $order;
         $this->resetPage();
+    }
+
+    public function toggleVote($reviewId, $isUpvote)
+    {
+        $userId = Auth::id();
+
+        // 1. Check if a vote already exists for this user + review
+        $existingVote = Upvote::where('user_id', $userId)
+            ->where('review_id', $reviewId)
+            ->first();
+
+        if ($existingVote) {
+            // 2. Logic: If they click the exact same button again, delete it (toggle off)
+            if ($existingVote->vote == $isUpvote) {
+                $existingVote->delete();
+            } else {
+                // 3. Logic: If they click the other button, switch the vote
+                $existingVote->update(['vote' => $isUpvote]);
+            }
+        } else {
+            // 4. Logic: New vote
+            Upvote::create([
+                'user_id' => $userId,
+                'review_id' => $reviewId,
+                'vote' => $isUpvote
+            ]);
+        }
     }
 
     #[Layout('components.layouts.app')]
