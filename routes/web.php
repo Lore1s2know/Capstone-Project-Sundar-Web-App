@@ -11,12 +11,12 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+//Route::view('dashboard', 'dashboard')
+//->middleware(['auth', 'verified'])
+//->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-
+    Route::get('/dashboard', App\Livewire\Dashboard::class)->name('dashboard');
     Route::get('/review/create', App\Livewire\CreateReview::class)->name('review.create');
     Route::get('/reviews', App\Livewire\ShowReviews::class)->name('reviews.index');
     Route::redirect('settings', 'settings/profile');
