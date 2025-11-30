@@ -72,8 +72,24 @@ class Dashboard extends Component
     #[Layout('components.layouts.app')]
     public function render()
     {
+        $userId = Auth::id();
+
+        // 1. Calculate Stats
+        $totalReviews = Review::where('user_id', $userId)->count();
+
+        // This query asks: "Count all upvotes attached to reviews written by Me"
+        $totalUpvotes = \App\Models\Upvote::whereHas('review', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->where('vote', true)->count();
+
+        // This query asks: "Count all downvotes attached to reviews written by Me"
+        $totalDownvotes = \App\Models\Upvote::whereHas('review', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->where('vote', false)->count();
+
+        // 2. Fetch the List (Existing logic)
         $userReviews = Review::with(['category', 'upvotes'])
-            ->where('user_id', Auth::id()) // <--- KEY DIFFERENCE: Only My Reviews
+            ->where('user_id', $userId)
             ->when($this->categoryFilter, function ($query) {
                 $query->where('category_id', $this->categoryFilter);
             })
@@ -82,7 +98,11 @@ class Dashboard extends Component
 
         return view('livewire.dashboard', [
             'reviews' => $userReviews,
-            'categories' => Category::all()
+            'categories' => Category::all(),
+            // Pass the new stats to the view
+            'statReviews' => $totalReviews,
+            'statUpvotes' => $totalUpvotes,
+            'statDownvotes' => $totalDownvotes,
         ]);
     }
 }
