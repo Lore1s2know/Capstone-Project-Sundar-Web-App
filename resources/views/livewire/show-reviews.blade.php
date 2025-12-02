@@ -52,52 +52,52 @@
                     
                     {{-- Card Header --}}
                     <div class="mb-4">
-                        <div class="flex items-center gap-3 mb-1">
-                            <span class="bg-slate-100 text-slate-500 text-xs font-sans font-bold px-2 py-1 rounded uppercase tracking-wide">
-                                {{ $review->category->name }}
-                            </span>
-                            <span class="font-sans text-slate-400 text-sm">
-                                {{ $review->created_at->diffForHumans() }}
-                            </span>
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="bg-slate-100 text-slate-500 text-xs font-sans font-bold px-2 py-1 rounded uppercase tracking-wide">
+                                    {{ $review->category->name }}
+                                </span>
+                                <span class="font-sans text-slate-400 text-sm">
+                                    {{ $review->created_at->diffForHumans() }}
+                                </span>
+                            </div>
+                            <h3 class="font-serif font-semibold text-xl text-neutral-900">
+                                {{ $review->product_name }}
+                            </h3>
                         </div>
-                        <h3 class="font-serif font-semibold text-xl text-neutral-900">
-                            {{ $review->product_name }}
-                        </h3>
-                    </div>
 
                     {{-- Card Body --}}
                     <p class="font-sans text-neutral-900 leading-relaxed mb-3">
                         {{ $review->review_text }}
                     </p>
-
-                    {{-- Interactive Voting Buttons --}}
+                        
+                        {{-- Interactive Voting Buttons --}}
                     <div class="flex items-center gap-1 mb-4">
-                        @php
-                            $userVote = $review->upvotes->where('user_id', auth()->id())->first();
-                        @endphp
+                            @php
+                                $userVote = $review->upvotes->where('user_id', auth()->id())->first();
+                            @endphp
 
                         {{-- UPVOTE BUTTON --}}
-                        <button wire:click="toggleVote({{ $review->id }}, true)" 
-                                class="transition hover:scale-110 focus:outline-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
+                            <button wire:click="toggleVote({{ $review->id }}, true)" 
+                                    class="transition hover:scale-110 focus:outline-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
                                  class="w-4 h-4 {{ $userVote && $userVote->vote == 1 ? 'text-blue-900' : 'text-slate-400 hover:text-blue-900' }}">
-                                <path fill-rule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
+                                    <path fill-rule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
 
-                        {{-- SCORE COUNT --}}
+                            {{-- SCORE COUNT --}}
                         <span class="font-sans font-semibold text-sm text-neutral-600 dark:text-neutral-400 px-1">
-                            {{ $review->upvotes->where('vote', 1)->count() - $review->upvotes->where('vote', 0)->count() }}
-                        </span>
+                                {{ $review->upvotes->where('vote', 1)->count() - $review->upvotes->where('vote', 0)->count() }}
+                            </span>
 
-                        {{-- DOWNVOTE BUTTON --}}
-                        <button wire:click="toggleVote({{ $review->id }}, false)" 
-                                class="transition hover:scale-110 focus:outline-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
+                            {{-- DOWNVOTE BUTTON --}}
+                            <button wire:click="toggleVote({{ $review->id }}, false)" 
+                                    class="transition hover:scale-110 focus:outline-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
                                  class="w-4 h-4 {{ $userVote && $userVote->vote === 0 ? 'text-blue-900' : 'text-slate-400 hover:text-blue-900' }}">
-                                <path fill-rule="evenodd" d="M12.53 21.53a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06l6.22 6.22V3a.75.75 0 011.5 0v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
+                                    <path fill-rule="evenodd" d="M12.53 21.53a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06l6.22 6.22V3a.75.75 0 011.5 0v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
                     </div>
 
                     {{-- Card Footer --}}

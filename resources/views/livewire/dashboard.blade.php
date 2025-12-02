@@ -165,7 +165,7 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
                                              class="w-4 h-4 {{ $userVote && $userVote->vote === 0 ? 'text-blue-900' : 'text-slate-400' }}">
                                             <path fill-rule="evenodd" d="M12.53 21.53a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06l6.22 6.22V3a.75.75 0 011.5 0v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5z" clip-rule="evenodd" />
-                                        </svg>
+                                    </svg>
                                     </div>
                                 </div>
                             </div>
