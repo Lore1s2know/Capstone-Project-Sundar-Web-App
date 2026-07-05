@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Review;
-use App\Models\Upvote;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -12,85 +9,25 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        if (User::query()->exists()) {
-            return;
-        }
-
-        // ==========================================
-        // PART 1: Run your existing CategorySeeder
-        // ==========================================
-        // This executes the file you already created to fill the categories table
         $this->call(CategorySeeder::class);
 
-        // Retrieve the categories from the DB so we have their IDs for the reviews
-        $makeup = Category::where('name', 'Makeup')->first();
-        $skincare = Category::where('name', 'Skincare')->first();
+        $this->createDemoUser('Alice Rivera', 'alice@example.com');
+        $this->createDemoUser('Bob Smith', 'bob@example.com');
+        $this->createDemoUser('Charlie Kim', 'charlie@example.com');
+        $this->createDemoUser('Diana Prince', 'diana@example.com');
 
-        // ==========================================
-        // PART 2: Create the 4 Demo Users
-        // ==========================================
-        $alice = $this->createDemoUser('Alice Rivera', 'alice@example.com');
-        $bob = $this->createDemoUser('Bob Smith', 'bob@example.com');
-        $charlie = $this->createDemoUser('Charlie Kim', 'charlie@example.com');
-        $diana = $this->createDemoUser('Diana Prince', 'diana@example.com');
-
-        $allUsers = [$alice, $bob, $charlie, $diana];
-
-        // ==========================================
-        // PART 3: Create Reviews (2 per User)
-        // ==========================================
-
-        foreach ($allUsers as $user) {
-            // Review 1: Makeup Category
-            Review::create([
-                'user_id' => $user->id,
-                'category_id' => $makeup->id,
-                'product_name' => 'SuperStay Matte Ink ('.$user->name.'\'s pick)',
-                'review_text' => 'I bought this lipstick last week and the color is amazing. It really stays on all day!',
-            ]);
-
-            // Review 2: Skincare Category
-            Review::create([
-                'user_id' => $user->id,
-                'category_id' => $skincare->id,
-                'product_name' => 'Hydrating Gel Cream ('.$user->name.'\'s pick)',
-                'review_text' => 'My skin feels so soft after using this. Highly recommend for dry skin types.',
-            ]);
-        }
-
-        // ==========================================
-        // PART 4: Add Random Upvotes/Downvotes
-        // ==========================================
-
-        $allReviews = Review::all();
-
-        foreach ($allReviews as $review) {
-            foreach ($allUsers as $voter) {
-
-                // Skip if the user is voting on their own review
-                if ($voter->id === $review->user_id) {
-                    continue;
-                }
-
-                // 50% chance they vote at all
-                if (rand(0, 1)) {
-                    Upvote::create([
-                        'user_id' => $voter->id,
-                        'review_id' => $review->id,
-                        'vote' => (bool) rand(0, 1), // Randomly true or false
-                    ]);
-                }
-            }
-        }
+        $this->call(ReviewSeeder::class);
     }
 
     private function createDemoUser(string $name, string $email): User
     {
-        return User::create([
-            'name' => $name,
-            'email' => $email,
-            'email_verified_at' => now(),
-            'password' => 'password',
-        ]);
+        return User::firstOrCreate(
+            ['email' => $email],
+            [
+                'name' => $name,
+                'email_verified_at' => now(),
+                'password' => 'password',
+            ],
+        );
     }
 }

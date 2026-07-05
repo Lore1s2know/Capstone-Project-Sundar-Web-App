@@ -22,14 +22,22 @@ test('render deployment files exist', function () {
     expect($dockerfile)->toContain('vendor/livewire/flux/dist/flux.css');
     expect($dockerfile)->toContain('npm run build');
     expect($dockerfile)->toContain('serversideup/php:8.4-fpm-nginx-bookworm');
+    expect($dockerfile)->toContain('NGINX_WEBROOT');
+    expect(File::exists(base_path('docker/nginx/flux.conf')))->toBeTrue();
+
+    $deployScript = File::get(base_path('scripts/00-laravel-deploy.sh'));
+
+    expect($deployScript)->not->toContain('view:cache');
+    expect($deployScript)->toContain('public/build/manifest.json');
 });
 
-test('database seeder skips when users already exist', function () {
-    User::factory()->create();
+test('database seeder does not duplicate demo users', function () {
+    User::factory()->create(['email' => 'alice@example.com']);
 
     $this->seed(DatabaseSeeder::class);
 
-    expect(User::count())->toBe(1);
+    expect(User::where('email', 'alice@example.com')->count())->toBe(1);
+    expect(User::count())->toBe(4);
 });
 
 test('database seeder creates demo users without faker', function () {

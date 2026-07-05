@@ -14,12 +14,12 @@ class CategorySeeder extends Seeder
     {
         Category::firstOrCreate(
             ['name' => 'Skincare'],
-            ['description' => 'Lotions, serums, and products for skin health.'],
+            ['description' => 'Cleansers, serums, moisturizers, and sun care for healthy skin.'],
         );
 
         Category::firstOrCreate(
-            ['name' => 'Makeup'],
-            ['description' => 'Cosmetic products for face and eyes.'],
+            ['name' => 'Eye Makeup'],
+            ['description' => 'Mascara, eyeliner, eyeshadow, and brow products for eye looks.'],
         );
     }
 }

@@ -30,8 +30,10 @@ COPY --from=vendor /app/vendor /var/www/html/vendor
 COPY --from=frontend /app/public/build /var/www/html/public/build
 
 COPY --chmod=755 scripts/00-laravel-deploy.sh /etc/entrypoint.d/00-laravel-deploy.sh
+COPY docker/nginx/flux.conf /etc/nginx/server-opts.d/flux.conf
 
-ENV WEB_DOCUMENT_ROOT=/var/www/html/public
+ENV NGINX_WEBROOT=/var/www/html/public
+ENV AUTORUN_ENABLED=false
 ENV SSL_MODE=off
 ENV LOG_OUTPUT_LEVEL=warn
 ENV PHP_OPCACHE_ENABLE=1
