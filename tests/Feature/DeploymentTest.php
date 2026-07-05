@@ -32,6 +32,13 @@ test('database seeder skips when users already exist', function () {
     expect(User::count())->toBe(1);
 });
 
+test('database seeder creates demo users without faker', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    expect(User::count())->toBe(4);
+    expect(User::where('email', 'alice@example.com')->exists())->toBeTrue();
+});
+
 test('database config supports render database url env var', function () {
     config([
         'database.connections.pgsql.url' => 'postgresql://user:pass@host:5432/dbname',
