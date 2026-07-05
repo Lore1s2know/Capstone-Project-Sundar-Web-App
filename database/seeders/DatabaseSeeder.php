@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        if (User::query()->exists()) {
+            return;
+        }
+
         // ==========================================
         // PART 1: Run your existing CategorySeeder
         // ==========================================
