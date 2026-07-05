@@ -3,6 +3,10 @@ set -e
 
 cd /var/www/html
 
+echo "Fixing storage permissions..."
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R ug+rwx storage bootstrap/cache
+
 echo "Running composer..."
 composer install --no-dev --optimize-autoloader --no-interaction
 

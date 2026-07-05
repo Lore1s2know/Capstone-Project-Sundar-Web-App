@@ -18,9 +18,10 @@ test('render deployment files exist', function () {
 
     $dockerfile = File::get(base_path('Dockerfile'));
 
-    expect($dockerfile)->toContain('composer install');
+    expect($dockerfile)->toContain('FROM composer:2 AS vendor');
     expect($dockerfile)->toContain('vendor/livewire/flux/dist/flux.css');
     expect($dockerfile)->toContain('npm run build');
+    expect($dockerfile)->toContain('serversideup/php:8.4-fpm-nginx-bookworm');
 });
 
 test('database seeder skips when users already exist', function () {
