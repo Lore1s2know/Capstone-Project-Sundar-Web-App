@@ -21,14 +21,15 @@ RUN npm ci && npm run build
 
 FROM serversideup/php:8.4-fpm-nginx-bookworm
 
+USER root
+
 WORKDIR /var/www/html
 
 COPY . /var/www/html
 COPY --from=vendor /app/vendor /var/www/html/vendor
 COPY --from=frontend /app/public/build /var/www/html/public/build
 
-COPY scripts/00-laravel-deploy.sh /etc/entrypoint.d/00-laravel-deploy.sh
-RUN chmod +x /etc/entrypoint.d/00-laravel-deploy.sh
+COPY --chmod=755 scripts/00-laravel-deploy.sh /etc/entrypoint.d/00-laravel-deploy.sh
 
 ENV WEB_DOCUMENT_ROOT=/var/www/html/public
 ENV SSL_MODE=off
